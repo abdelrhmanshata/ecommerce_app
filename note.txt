@@ -1,0 +1,21 @@
+npm init -y
+npm install --save-dev prisma typescript ts-node @types/node nodemon
+npx prisma init
+npx prisma migrate dev --name migrationName
+
+
+npx prisma generate
+npx prisma migrate dev
+
+
+
+
+
+
+
+
+
+
+
+
+
