@@ -19,13 +19,21 @@ enum Role {
   USER
 }
 
-model User {
-  id       Int    @id @default(autoincrement())
-  name     String
-  email    String @unique
-  password String
-  role     Role   @default(USER)
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
 
+// User model
+model User {
+  id                     Int    @id @default(autoincrement())
+  name                   String
+  email                  String @unique
+  password               String
+  role                   Role   @default(USER)
   defaultShippingAddress Int?
   defaultBillingAddress  Int?
 
@@ -33,7 +41,10 @@ model User {
   updatedAt DateTime   @updatedAt
   Address   Address[]
   CartItems CartItem[]
+  Order     Order[]
 
+  // indexes
+  @@index([email])
   @@map("users")
 }
 
@@ -51,19 +62,24 @@ model Address {
   userId Int
   user   User @relation(fields: [userId], references: [id])
 
+  // indexes
+  @@index([userId])
   @@map("addresses")
 }
 
 model Product {
-  id          Int        @id @default(autoincrement())
-  name        String
-  description String
-  price       Decimal
-  tags        String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  CartItems   CartItem[]
+  id           Int            @id @default(autoincrement())
+  name         String
+  description  String
+  price        Decimal
+  tags         String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  CartItems    CartItem[]
+  OrderProduct OrderProduct[]
 
+  // indexes
+  @@index([id])
   @@map("product")
 }
 
@@ -79,5 +95,60 @@ model CartItem {
   productId Int
   product   Product @relation(fields: [productId], references: [id])
 
+  // indexes  
+  @@index([userId])
+  @@index([productId])
   @@map("card_items")
+}
+
+model Order {
+  id        Int     @id @default(autoincrement())
+  netAmount Decimal
+  address   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  userId       Int
+  user         User           @relation(fields: [userId], references: [id])
+  OrderProduct OrderProduct[]
+  orderEvent   OrderEvent[]
+
+  // indexes
+  @@index([userId])
+  @@map("orders")
+}
+
+model OrderProduct {
+  id        Int      @id @default(autoincrement())
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+
+  // indexes
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_products")
+}
+
+model OrderEvent {
+  id        Int         @id @default(autoincrement())
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  // relations
+  orderId Int
+  order   Order @relation(fields: [orderId], references: [id])
+
+  // indexes
+  @@index([orderId])
+  @@map("order_events")
 }
