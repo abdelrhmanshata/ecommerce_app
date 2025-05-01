@@ -6,10 +6,13 @@ import adminMiddleware from "../middlewares/admin"
 
 const productsRoutes: Router = Router()
 
-productsRoutes.get("/", [authMiddleware, adminMiddleware],errorHandler(getProducts))
-productsRoutes.post("/", [authMiddleware, adminMiddleware],errorHandler(createProduct))
-productsRoutes.put("/:id", [authMiddleware, adminMiddleware],errorHandler(updateProduct))
-productsRoutes.delete("/:id", [authMiddleware, adminMiddleware],errorHandler(deleteProduct))
-productsRoutes.get("/:id", [authMiddleware, adminMiddleware],errorHandler(getProductById))
+// Apply auth and admin middleware to all routes
+productsRoutes.use([authMiddleware, adminMiddleware])
+
+productsRoutes.get("/", errorHandler(getProducts))
+productsRoutes.post("/", errorHandler(createProduct))
+productsRoutes.put("/:id", errorHandler(updateProduct))
+productsRoutes.delete("/:id", errorHandler(deleteProduct))
+productsRoutes.get("/:id", errorHandler(getProductById))
 
 export default productsRoutes

@@ -5,10 +5,12 @@ import authMiddleware from "../middlewares/auth";
 
 const cartsRoutes: Router = Router();
 
-cartsRoutes.get("/", authMiddleware, errorHandler(listCartItems));
-cartsRoutes.post("/", authMiddleware, errorHandler(addItemToCart));
-cartsRoutes.get("/:id", authMiddleware, errorHandler(getCartItems));
-cartsRoutes.put("/:id", authMiddleware, errorHandler(updateCartItem));
-cartsRoutes.delete("/:id", authMiddleware, errorHandler(removeFromCart));
+cartsRoutes.use(authMiddleware);
+
+cartsRoutes.get("/", errorHandler(listCartItems));
+cartsRoutes.post("/", errorHandler(addItemToCart));
+cartsRoutes.get("/:id", errorHandler(getCartItems));
+cartsRoutes.put("/:id", errorHandler(updateCartItem));
+cartsRoutes.delete("/:id", errorHandler(removeFromCart));
 
 export default cartsRoutes;

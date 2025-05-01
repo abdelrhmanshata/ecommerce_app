@@ -5,10 +5,15 @@ import { addAddress, deleteAddress, listAddress, updateUser } from "../controlle
 
 const usersRoutes: Router = Router()
 
-usersRoutes.get("/addresses", authMiddleware, errorHandler(listAddress))
-usersRoutes.post("/addresses", authMiddleware, errorHandler(addAddress))
-usersRoutes.delete("/addresses/:id", authMiddleware, errorHandler(deleteAddress))
+// Apply auth middleware to all routes
+usersRoutes.use(authMiddleware)
 
-usersRoutes.put("/", authMiddleware, errorHandler(updateUser))
+// Address routes
+usersRoutes.get("/addresses", errorHandler(listAddress))
+usersRoutes.post("/addresses", errorHandler(addAddress))
+usersRoutes.delete("/addresses/:id", errorHandler(deleteAddress))
+
+// User routes
+usersRoutes.put("/", errorHandler(updateUser))
 
 export default usersRoutes
