@@ -27,7 +27,7 @@ export const signup: RequestHandler = async (req, res, next) => {
     })
 
     const { password: _, ...safeUser } = user
-    res.json(safeUser)
+    res.status(201).json(safeUser)
 }
 
 export const login: RequestHandler = async (req, res) => {
@@ -44,9 +44,9 @@ export const login: RequestHandler = async (req, res) => {
 
     const { password: _, ...safeUser } = user
     const token = jwt.sign({ userID: user.id }, JWT_SECRET)
-    res.json({ user: safeUser, token })
+    res.status(200).json({ user: safeUser, token })
 }
 
 export const me: RequestHandler = async (req, res) => {
-    res.json(req.user)
+    res.status(200).json(req.user)
 }
