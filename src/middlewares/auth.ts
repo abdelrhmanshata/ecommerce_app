@@ -9,6 +9,13 @@ interface JWTPayload {
     userID: number;
 }
 
+function exclude(user: any, keys: string[]) {
+    for (let key of keys) {
+      delete user[key];
+    }
+    return user;
+  }
+
 const authMiddleware: RequestHandler = async (req, res, next) => {
     const token = req.headers.authorization?.replace('Bearer ', '')
 
@@ -18,16 +25,11 @@ const authMiddleware: RequestHandler = async (req, res, next) => {
 
     try {
         const payload = jwt.verify(token, JWT_SECRET) as JWTPayload
-        const user = await prismaClient.user.findUnique({
+        let user = await prismaClient.user.findUnique({
             where: { id: payload.userID },
-            select: {
-                id: true,
-                email: true,
-                name: true,
-                createdAt: true,
-                updatedAt: true
-            }
         })
+
+        user = exclude(user, ['password'])
 
         if (!user) {
             return next(new UnAuthorizedException("Unauthorized", ErrorCode.UNAUTHORIZED))
