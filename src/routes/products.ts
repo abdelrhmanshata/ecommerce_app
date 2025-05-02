@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { createProduct, deleteProduct, getProductById, getProducts, updateProduct } from "../controllers/products"
+import { createProduct, deleteProduct, getProductById, getProducts, searchProduct, updateProduct } from "../controllers/products"
 import { errorHandler } from "../error-handler"
 import authMiddleware from "../middlewares/auth"
 import adminMiddleware from "../middlewares/admin"
@@ -14,5 +14,6 @@ productsRoutes.post("/", errorHandler(createProduct))
 productsRoutes.put("/:id", errorHandler(updateProduct))
 productsRoutes.delete("/:id", errorHandler(deleteProduct))
 productsRoutes.get("/:id", errorHandler(getProductById))
+productsRoutes.get("/search", errorHandler(searchProduct))
 
 export default productsRoutes

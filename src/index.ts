@@ -9,7 +9,24 @@ import { errorMiddleware } from './middlewares/errors'
 // Initialize Prisma Client
 export const prismaClient = new PrismaClient(
   { log: ['query'] }
-)
+).$extends({
+  result: {
+    address: {
+      formattedAddress: {
+        needs: {
+          lineOne: true,
+          lineTwo: true,
+          city: true,
+          country: true,
+          zip: true
+        },
+        compute(address) {
+          return `${address.lineOne}, ${address.lineTwo}, ${address.city}, ${address.country}, ${address.zip}`
+        }
+      }
+    }
+  }
+})
 
 const app: Express = express()
 // middleware
